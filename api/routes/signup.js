@@ -1,5 +1,9 @@
 const express = require('express')
+const { default: mongoose } = require('mongoose')
 const router = express.Router()
+
+// import the model
+const Signup = require('../model/signup')
 
 // localhost:5001/users/signup/
 // GET -> Reading the data
@@ -10,19 +14,21 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    // Expecting the   and userPassword from the user to write in the DB
+    // Expecting the userEmail and userPassword from the user to write in the DB
     // const variable = req.body.propertNameFromRequest
 
     // NOTE --> By default, NodeJS does not have access to request.body
-    const userEmail = req.body.email
-    const userPassword = req.body.password
 
-    const createdUser = {
-        email: userEmail,
-        password: userPassword
-    }
+    // Store the value of userEmail & userPassword in the database
+    const user = new Signup({
+        _id: new mongoose.Types.ObjectId(),
+        email: req.body.email,
+        password: req.body.password
+    })
 
-    res.status(201).json( {message: 'User Created', credentials: createdUser} )
+    user.save()
+        .then(result => res.status(201).json( {message: 'User Created', userDetails: result} ))
+        .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
 })
 
 router.patch('/', (req, res) => {
