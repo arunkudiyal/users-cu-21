@@ -26,13 +26,48 @@ router.post('/', (req, res) => {
         password: req.body.password
     })
 
-    user.save()
-        .then(result => res.status(201).json( {message: 'User Created', userDetails: result} ))
+    Signup.find( {email: req.body.email} )
+        .then( result => {
+            // If the email does not exist in the DB
+            if(result.length === 0) {
+                user.save()
+                // result -> type -> Object
+                // .then(result => res.status(201).json( {message: 'User Signup Successful!', userEmail: result.email, userPassword: result.password} ))
+                .then(result => res.status(201).json( {message: 'User Signup Successful!', userDetails: result} ))
+                .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
+            } else {
+                res.status(400).json( {message: 'Email already exists, try again with a different email'} )
+            }
+        })
         .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
 })
 
 router.patch('/', (req, res) => {
-    res.status(200).json( {message: 'PATCH request to /users/signup'} )
+    const userEmail = req.body.email
+    const userOldPassword = req.body.password
+    const userNewPassword = req.body.newPassword
+
+    Signup.find( {email: userEmail} )
+        .then( result => {
+            // Email entered in the update form is wrong
+            if(result.length === 0) {
+                res.status(400).json( {message: 'User does not exist'} )
+            } else {
+                if(result[0].password === userOldPassword) {
+                    updatedUser = {
+                        _id: result[0]._id,
+                        email: result[0].email,
+                        password: userNewPassword
+                    }
+                    Signup.findByIdAndUpdate(result[0]._id, updatedUser)
+                        .then(updatedResult => res.status(200).json( {message: 'User Details Updated', update: updatedResult} ) )
+                        .catch(err => res.status(500).json( {message: 'error occured in the DB', err: err} ))
+                } else {
+                    res.status(400).json( {message: 'Authentication Failed!'} )
+                }
+            }
+        } )
+        .catch(err => res.status(500).json( {message: 'error occured in the DB', err: error} ))
 })
 
 router.delete('/', (req, res) => {
