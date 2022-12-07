@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 
 const app = express()
 
+const homeRoute = require('./api/routes/home')
 const loginRoute = require('./api/routes/login')
 const signupRoute = require('./api/routes/signup')
 
@@ -42,9 +43,7 @@ mongoose.connect( 'mongodb+srv://arunkudiyal:examplepwd@cluster0.2pssb.mongodb.n
 // } )
 
 // SYNTAX -> app.use('path', nameOfFile)
-app.use('/', (req, res) => {
-    res.status(200).json( {message: 'Accessing Home Route'} )
-})
+app.use('/', homeRoute)
 app.use('/users/login', loginRoute)
 app.use('/users/signup', signupRoute)
 
