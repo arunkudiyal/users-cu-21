@@ -1,10 +1,11 @@
 // Responsible for handling all your reqs and responses
 // Express Application
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+
+const app = express()
 
 const loginRoute = require('./api/routes/login')
 const signupRoute = require('./api/routes/signup')
