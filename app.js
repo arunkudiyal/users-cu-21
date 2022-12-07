@@ -41,12 +41,15 @@ mongoose.connect( 'mongodb+srv://arunkudiyal:examplepwd@cluster0.2pssb.mongodb.n
 // } )
 
 // SYNTAX -> app.use('path', nameOfFile)
+app.use('/', (req, res) => {
+    res.status(200).json( {message: 'Accessing Home Route'} )
+})
 app.use('/users/login', loginRoute)
 app.use('/users/signup', signupRoute)
 
 // Throwing an error for the base('/') route
 // localhost:5001/ --> Home Route
-app.use('/', (req, res) => {
+app.use( (req, res) => {
     // res.status().json( {JS Object} )
     res.status(404).json( {msg: 'Seems like youre lost, please try again with a route!'} )
 } )
