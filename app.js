@@ -46,7 +46,7 @@ app.use('/users/signup', signupRoute)
 
 // Throwing an error for the base('/') route
 // localhost:5001/ --> Home Route
-app.use( (req, res) => {
+app.use('/', (req, res) => {
     // res.status().json( {JS Object} )
     res.status(404).json( {msg: 'Seems like youre lost, please try again with a route!'} )
 } )
