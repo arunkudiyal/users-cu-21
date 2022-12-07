@@ -7,9 +7,9 @@ const mongoose = require('mongoose')
 
 const app = express()
 
-const homeRoute = require('./api/routes/home')
-const loginRoute = require('./api/routes/login')
-const signupRoute = require('./api/routes/signup')
+const homeRoute = require('/api/routes/home')
+const loginRoute = require('/api/routes/login')
+const signupRoute = require('/api/routes/signup')
 
 // MIDDLEWARES --> Any piece of code which will be executed after the server and before the routes
 // Eg -> DB Connection...
