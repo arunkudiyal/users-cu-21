@@ -4,6 +4,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const session = require('express-session')
+const cors = require('cors')
 
 const app = express()
 
@@ -20,6 +22,23 @@ const signupRoute = require('./api/routes/signup')
 // extended: true --> Any type of data
 app.use( bodyParser.urlencoded( {extended: false} ) )
 app.use( bodyParser.json() )
+// FE --> xhr.setRequestHeader( 'Access-Control-Allow-Orgin', 'http://localhost:30000' )
+// FE --> xhr.setRequestHeader( 'Access-Control-Allow-Orgin', '*' )
+app.use( cors() )
+
+// Using the session --> Configuring a session by giving options
+app.use( session( {
+    // Forces the session to be saved back to the session store, even if the session was never modified during the request.
+    resave: true,
+    // Forces a session that is "uninitialized" to be saved to the store. A session is uninitialized when it is new but not modified
+    saveUninitialized: true,
+    // VVIMP --> This is the secret used to sign the session cookie. This can be either a string for a single secret, or an array of multiple secrets. If an array of secrets is provided, only the first element will be used to sign the session ID cookie, while all the elements will be considered when verifying the signature in requests.
+    secret: 'secret',
+    // Specifies the number (in milliseconds) to use when calculating the age of the session.
+    // cookie: {
+    //     maxAge: 3200000
+    // }
+} ) )
 
 // 3. morgan --> DEV DEP --> Logger middleware --> Any request made on the API, will be logged in the console
 app.use( morgan('dev') )
