@@ -5,7 +5,7 @@ const Signup = require('../model/signup')
 
 // URL -> /users/login
 router.get('/', (req, res) => {
-    res.status(200).json( {msg: 'GET request to /users/login'} )
+    res.status(200).json( {msg: 'GET request to /users/login', loggedInUserDetails: req.session.user} )
 })
 
 // PATH -> /users/login/userId
@@ -26,7 +26,16 @@ router.post('/', (req, res) => {
                 res.status(400).json({messgae: 'User does not exist, try again with a different email'})
             } else {
                 if(result[0].password === req.body.password) {
-                    res.status(400).json({messgae: 'Auth Successful'})
+                    // Create an object which will contain user details for the user in the session
+                    const loggedInUser = {
+                        email: req.body.email,
+                        password: req.body.password
+                    }
+                    // Create a session for the user
+                    req.session.user = loggedInUser
+                    // Save the details in the session cookie
+                    req.session.save()
+                    res.status(200).json({messgae: 'Auth Successful', userLoggedIn: loggedInUser})
                 } else {
                     res.status(400).json({messgae: 'Auth Unsuccessful, check you password'})
                 }

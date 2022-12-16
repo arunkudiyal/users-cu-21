@@ -33,6 +33,7 @@ app.use( session( {
     // Forces a session that is "uninitialized" to be saved to the store. A session is uninitialized when it is new but not modified
     saveUninitialized: true,
     // VVIMP --> This is the secret used to sign the session cookie. This can be either a string for a single secret, or an array of multiple secrets. If an array of secrets is provided, only the first element will be used to sign the session ID cookie, while all the elements will be considered when verifying the signature in requests.
+    secret: ['for', 'security', 'secret'],
     secret: 'secret',
     // Specifies the number (in milliseconds) to use when calculating the age of the session.
     // cookie: {
