@@ -5,6 +5,15 @@ const router = express.Router()
 // import the model
 const Signup = require('../model/signup')
 
+// ENCRYPTION PROCESS ->
+// Plain Text -> My Message
+
+// public_key -> 3
+// algorithm -> 3 alphabets after the given alphabet
+// Cipher Text -> Pb Phvvdkh
+// 
+// Salt Rounds...
+
 // localhost:5001/users/signup/
 // GET -> Reading the data
 // POST -> Write the data
