@@ -12,6 +12,7 @@ const app = express()
 const homeRoute = require('./api/routes/home')
 const loginRoute = require('./api/routes/login')
 const signupRoute = require('./api/routes/signup')
+const logoutRoute = require('./api/routes/logout')
 
 // MIDDLEWARES --> Any piece of code which will be executed after the server and before the routes
 // Eg -> DB Connection...
@@ -66,6 +67,7 @@ mongoose.connect( 'mongodb+srv://arunkudiyal:examplepwd@cluster0.2pssb.mongodb.n
 app.use('/', homeRoute)
 app.use('/users/login', loginRoute)
 app.use('/users/signup', signupRoute)
+app.use('/users/logout', logoutRoute)
 
 // Throwing an error for the base('/') route
 // localhost:5001/ --> Home Route

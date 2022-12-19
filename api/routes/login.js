@@ -31,9 +31,9 @@ router.post('/', (req, res) => {
                         email: req.body.email,
                         password: req.body.password
                     }
-                    // Create a session for the user
+                    // Create a session for the user | Server
                     req.session.user = loggedInUser
-                    // Save the details in the session cookie
+                    // Save the details in the session cookie | Browser Cookie 
                     req.session.save()
                     res.status(200).json({messgae: 'Auth Successful', userLoggedIn: loggedInUser})
                 } else {
