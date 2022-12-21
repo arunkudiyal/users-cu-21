@@ -1,5 +1,6 @@
 const express = require('express')
 const { default: mongoose } = require('mongoose')
+const bcrypt = require('bcrypt')
 const router = express.Router()
 
 // import the model
@@ -29,26 +30,30 @@ router.post('/', (req, res) => {
     // NOTE --> By default, NodeJS does not have access to request.body
 
     // Store the value of userEmail & userPassword in the database
-    const user = new Signup({
-        _id: new mongoose.Types.ObjectId(),
-        email: req.body.email,
-        password: req.body.password
-    })
-
-    Signup.find( {email: req.body.email} )
-        .then( result => {
-            // If the email does not exist in the DB
-            if(result.length === 0) {
-                user.save()
-                // result -> type -> Object
-                // .then(result => res.status(201).json( {message: 'User Signup Successful!', userEmail: result.email, userPassword: result.password} ))
-                .then(result => res.status(201).json( {message: 'User Signup Successful!', userDetails: result} ))
-                .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
-            } else {
-                res.status(400).json( {message: 'Email already exists, try again with a different email'} )
-            }
+    const saltRounds = 10
+    bcrypt.hash(req.body.password, saltRounds)
+        .then(result => {
+            const user = new Signup({
+                _id: new mongoose.Types.ObjectId(),
+                email: req.body.email,
+                password: result
+            })
+            Signup.find( {email: req.body.email} )
+            .then( result => {
+                // If the email does not exist in the DB
+                if(result.length === 0) {
+                    user.save()
+                    // result -> type -> Object
+                    // .then(result => res.status(201).json( {message: 'User Signup Successful!', userEmail: result.email, userPassword: result.password} ))
+                    .then(result => res.status(201).json( {message: 'User Signup Successful!', userDetails: result} ))
+                    .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
+                } else {
+                    res.status(400).json( {message: 'Email already exists, try again with a different email'} )
+                }
+            })
+            .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
         })
-        .catch(error => res.status(500).json( {message: 'error occured in the DB', err: error} ))
+        .catch(err => res.status(500).json( {message: 'Server encounteerd an error, please try again later', error: err} ))
 })
 
 router.patch('/', (req, res) => {

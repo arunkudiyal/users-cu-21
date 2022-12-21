@@ -1,4 +1,5 @@
 const express = require('express')
+const bcrypt = require('bcrypt')
 const router = express.Router()
 
 const Signup = require('../model/signup')
@@ -25,20 +26,22 @@ router.post('/', (req, res) => {
             if(result.length === 0) {
                 res.status(400).json({messgae: 'User does not exist, try again with a different email'})
             } else {
-                if(result[0].password === req.body.password) {
-                    // Create an object which will contain user details for the user in the session
-                    const loggedInUser = {
-                        email: req.body.email,
-                        password: req.body.password
-                    }
-                    // Create a session for the user | Server
-                    req.session.user = loggedInUser
-                    // Save the details in the session cookie | Browser Cookie 
-                    req.session.save()
-                    res.status(200).json({messgae: 'Auth Successful', userLoggedIn: loggedInUser})
-                } else {
-                    res.status(400).json({messgae: 'Auth Unsuccessful, check you password'})
-                }
+                bcrypt.compare(req.body.password, result[0].password)
+                    .then(cmp => {
+                        if(cmp) {
+                            const loggedInUser = {
+                                email: req.body.email,
+                                password: req.body.password
+                            }
+                            // Create a session for the user | Server
+                            req.session.user = loggedInUser
+                            // Save the details in the session cookie | Browser Cookie 
+                            req.session.save()
+                            res.status(200).json({messgae: 'Auth Successful', userLoggedIn: loggedInUser})
+                        } else {
+                            res.status(400).json({messgae: 'Auth Unsuccessful, check you password'})
+                        }
+                    })
             }
         })
         .catch(err => res.status(500).json( {messgae: 'Datatbase Error', error: err} ))
